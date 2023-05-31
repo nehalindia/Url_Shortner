@@ -21,9 +21,7 @@ const urlSchema = new mongoose.Schema({
         type : String,
         required: [true, "Url is required"],
         unique : true,
-        lowercase : true,
         trim: true
-
     }
 })
 
