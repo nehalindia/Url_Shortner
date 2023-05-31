@@ -5,4 +5,4 @@ router.post('/url/shorten')
 router.get('/:urlCode')
 
 
-module.exports = {}
+module.exports = router
