@@ -17,7 +17,7 @@ const createShortUrl = async function(req,res){
         url = url.toLowerCase()
         let check = await urlModel.findOne({longUrl : url}).select({urlCode:1, shortUrl:1, longUrl:1, _id:0})
         if(check){
-            cache.set(check.urlCode, url, 60*60*60*60)
+            cache.set(check.urlCode, url, 60*60*60)
             return res.status(200).send({status:true, data:check })
         }
         else{
@@ -43,15 +43,11 @@ const getUrl = async function(req,res){
             return res.status(400).send({status :false, message: "Not a valid Url"})
         }
         let code = req.params.urlCode
-        if (cache.has(code)) {
-            console.log("cache exist")
-        }
-        else{
-            console.log("cache not exist")
-        }
+        if (cache.has(code)) { console.log("cache exist")}
+        else{   console.log("cache not exist")}
           
         const checkCache = cache.get(code);
-        console.log(checkCache)
+        console.log(checkCache,req.rawHeaders[7])
         if(checkCache){
             return res.status(302).redirect(checkCache);
         }

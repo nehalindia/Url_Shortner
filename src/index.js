@@ -17,5 +17,5 @@ mongoose.connect("mongodb+srv://nehaluddindpe:RCGtWC3HqBQUfNeR@cluster0.wzbtyg0.
 app.use('/',route)
 
 
-app.get('/', (req, res) => res.send('Hello World!'))
+ app.get('/', (req, res) => res.send('Hello World!'))
 app.listen(port, () => console.log(`App is listening on port `)) 
