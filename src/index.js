@@ -2,11 +2,13 @@ const  express = require('express')
 const app = express()
 const port = 3000
 const route = require('./route/route')
+const dotenv = require('dotenv')
 const {default : mongoose } = require('mongoose')
+dotenv.config()
 
 app.use(express.json())
 
-mongoose.connect("mongodb+srv://nehaluddindpe:RCGtWC3HqBQUfNeR@cluster0.wzbtyg0.mongodb.net/urlshortner?retryWrites=true&w=majority", {
+mongoose.connect(process.env.MONGO_URI, {
     useNewUrlParser :true
 }).then(()=>{
     console.log("mongodb is connected")
@@ -18,4 +20,4 @@ app.use('/',route)
 
 
 app.get('/', (req, res) => res.send('Hello World!'))
-app.listen(port, () => console.log(`App is listening on port ${port}!`)) 
+app.listen(process.env.PORT, () => console.log(`App is listening on port `)) 
