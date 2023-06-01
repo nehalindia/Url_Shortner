@@ -3,10 +3,21 @@ const NodeCache = require('node-cache')
 const cache = new NodeCache();
 const validUrl = require('valid-url')
 const shortid = require('shortid');
- 
+
 
 const createShortUrl = async function(req,res){
     try{
+        let protocol = req.protocol;
+        // let host = req.hostname;
+        // console.log(req.rawHeaders)
+        let rawHeaders = req.rawHeaders
+        let hostName
+        for(let i = 0; i<rawHeaders.length; i++){
+            if(rawHeaders[i].includes(':')){
+                hostName = rawHeaders[i] 
+            }
+        }
+        
         if(!req.body.url){
             return res.status(400).send({status :false, message: "Must add Any Url"})
         }
@@ -20,13 +31,16 @@ const createShortUrl = async function(req,res){
             cache.set(check.urlCode, url, 60*60*60)
             return res.status(200).send({status:true, data:check })
         }
+
+
         else{
             let code = shortid.generate().toLowerCase()
-            let data = {longUrl : url, urlCode: code, shortUrl: "http://localhost:3000/"+code }
+            let data = {longUrl : url, urlCode: code, shortUrl: `${protocol}://${hostName}/${code}` }
+            // let data = {longUrl : url, urlCode: code, shortUrl: "http://localhost:3000/"+code }
             let result = await urlModel.create(data)
             cache.set(code, data.longUrl, 60*60*60*60)
             let my = {longUrl: result.longUrl, shortUrl: result.shortUrl, urlCode: result.urlCode}
-            return res.status(200).send({status:true, data:my})
+            return res.status(201).send({status:true, data:my})
         }
     }catch(error){
         res.status(500).send({status : false,message: error.message})
