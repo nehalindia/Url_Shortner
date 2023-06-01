@@ -1,4 +1,6 @@
 const urlModel = require('../models/urlModel')
+const NodeCache = require('node-cache')
+const cache = new NodeCache();
 const validUrl = require('valid-url')
 const shortid = require('shortid');
  
@@ -21,6 +23,7 @@ const createShortUrl = async function(req,res){
             let code = shortid.generate().toLowerCase()
             let data = {longUrl : url, urlCode: code, shortUrl: "http://localhost:3000/"+code }
             let result = await urlModel.create(data)
+            
             let my = {longUrl: result.longUrl, shortUrl: result.shortUrl, urlCode: result.urlCode}
             return res.status(200).send({status:true, data:my})
         }
@@ -38,11 +41,12 @@ const getUrl = async function(req,res){
             console.log(req.params.urlCode)
             return res.status(400).send({status :false, message: "Not a valid Url"})
         }
+        
         let data = await urlModel.findOne({urlCode: req.params.urlCode}).select({urlCode:1, shortUrl:1, longUrl:1, _id:0})
         if(!data){
-            return res.status(400).send({status :false, message: "Not a valid Url"})
+            return res.status(404).send({status :false, message: "Not a valid Url"})
         }
-        res.redirect(data.longUrl);
+        res.status(302).redirect(data.longUrl);
     }catch(error){
         res.status(500).send({status : false,message: error.message})
     }
