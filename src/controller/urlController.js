@@ -23,7 +23,7 @@ const createShortUrl = async function(req,res){
             let code = shortid.generate().toLowerCase()
             let data = {longUrl : url, urlCode: code, shortUrl: "http://localhost:3000/"+code }
             let result = await urlModel.create(data)
-            
+            cache.set("my", "nehal", 1200000000)
             let my = {longUrl: result.longUrl, shortUrl: result.shortUrl, urlCode: result.urlCode}
             return res.status(200).send({status:true, data:my})
         }
@@ -41,10 +41,21 @@ const getUrl = async function(req,res){
             console.log(req.params.urlCode)
             return res.status(400).send({status :false, message: "Not a valid Url"})
         }
-        
+        let ab= "my"
+        if (cache.has(ab)) {
+            // Key exists in the cache
+            console.log("cache exist")
+        }
+        else{
+            console.log("cache not exist")
+        }
+          
+        const checkCache = cache.get(ab);
+        console.log(checkCache)
+        return res.status(200).send({status :true, message: checkCache})
         let data = await urlModel.findOne({urlCode: req.params.urlCode}).select({urlCode:1, shortUrl:1, longUrl:1, _id:0})
         if(!data){
-            return res.status(404).send({status :false, message: "Not a valid Url"})
+            return res.status(403).send({status :false, message: "Not a valid Url"})
         }
         res.status(302).redirect(data.longUrl);
     }catch(error){
