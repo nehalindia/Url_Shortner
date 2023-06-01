@@ -2,9 +2,7 @@ const  express = require('express')
 const app = express()
 const port = 3000
 const route = require('./route/route')
-const dotenv = require('dotenv')
 const {default : mongoose } = require('mongoose')
-dotenv.config()
 
 app.use(express.json())
 
@@ -20,4 +18,4 @@ app.use('/',route)
 
 
 app.get('/', (req, res) => res.send('Hello World!'))
-app.listen(30000, () => console.log(`App is listening on port `)) 
+app.listen(port, () => console.log(`App is listening on port `)) 
