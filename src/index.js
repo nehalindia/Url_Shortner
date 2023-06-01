@@ -8,7 +8,7 @@ dotenv.config()
 
 app.use(express.json())
 
-mongoose.connect(process.env.MONGO_URI, {
+mongoose.connect("mongodb+srv://nehaluddindpe:RCGtWC3HqBQUfNeR@cluster0.wzbtyg0.mongodb.net/blogingsite?retryWrites=true&w=majority", {
     useNewUrlParser :true
 }).then(()=>{
     console.log("mongodb is connected")
@@ -20,4 +20,4 @@ app.use('/',route)
 
 
 app.get('/', (req, res) => res.send('Hello World!'))
-app.listen(process.env.PORT, () => console.log(`App is listening on port `)) 
+app.listen(30000, () => console.log(`App is listening on port `)) 
