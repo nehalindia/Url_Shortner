@@ -9,12 +9,12 @@ const createShortUrl = async function(req,res){
     try{
         let protocol = req.protocol;
         // let host = req.hostname;
-        // console.log(req.rawHeaders)
+        console.log(req.rawHeaders)
         let rawHeaders = req.rawHeaders
         let hostName
         for(let i = 0; i<rawHeaders.length; i++){
-            if(rawHeaders[i].includes(':')){
-                hostName = rawHeaders[i] 
+            if(rawHeaders[i].includes('Host')){
+                hostName = rawHeaders[i+1] 
             }
         }
         
@@ -47,6 +47,7 @@ const createShortUrl = async function(req,res){
 
 const getUrl = async function(req,res){
     try{
+        console.log(req.rawHeaders)
         if(!req.params.urlCode) {
             return res.status(400).send({status :false, message: "Must send complete Url"})
         }
@@ -66,7 +67,7 @@ const getUrl = async function(req,res){
         //return res.status(200).send({status :true, message: checkCache})
         let data = await urlModel.findOne({urlCode: req.params.urlCode}).select({urlCode:1, shortUrl:1, longUrl:1, _id:0})
         if(!data){
-            return res.status(403).send({status :false, message: "Not a valid Url"})
+            return res.status(404).send({status :false, message: "Not a valid Url"})                       //status code has to be changed
         }else{
             res.status(302).redirect(data.longUrl);
         }
