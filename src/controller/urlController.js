@@ -5,7 +5,8 @@ const validUrl = require('valid-url')
 const shortid = require('shortid');
 const redis = require("redis");
 const { promisify } = require("util");
-
+// const { nanoid } = require('nanoid');
+// const { isNanoid } = require('nanoid');
 
 
 //1. Connect to the redis server
@@ -30,8 +31,7 @@ const redisClient = redis.createClient(
 
 const SET_ASYNC = promisify(redisClient.SET).bind(redisClient);
 const GET_ASYNC = promisify(redisClient.GET).bind(redisClient);
-// const { nanoid } = require('nanoid');
-// const { isNanoid } = require('nanoid');
+
 
 
 const createShortUrl = async function(req,res){
