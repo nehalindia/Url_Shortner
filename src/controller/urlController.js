@@ -3,6 +3,8 @@ const NodeCache = require('node-cache')
 const cache = new NodeCache();
 const validUrl = require('valid-url')
 const shortid = require('shortid');
+// const { nanoid } = require('nanoid');
+// const { isNanoid } = require('nanoid');
 
 
 const createShortUrl = async function(req,res){
@@ -29,10 +31,12 @@ const createShortUrl = async function(req,res){
         let check = await urlModel.findOne({longUrl : url}).select({urlCode:1, shortUrl:1, longUrl:1, _id:0})
         if(check){
             cache.set(check.urlCode, url)
-            return res.status(200).send({status:true, data:check })
+           // return res.status(200).send({status:true, data:check })
         }
         else{
             let code = shortid.generate().toLowerCase()
+            // let code = nanoid(6).toLowerCase()
+            console.log(code)
             let data = {longUrl : url, urlCode: code, shortUrl: `${protocol}://${hostName}/${code}` }
             // let data = {longUrl : url, urlCode: code, shortUrl: "http://localhost:3000/"+code }
             let result = await urlModel.create(data)
@@ -52,6 +56,7 @@ const getUrl = async function(req,res){
             return res.status(400).send({status :false, message: "Must send complete Url"})
         }
         if(!shortid.isValid(req.params.urlCode)){
+        // if(!shortid.isNanoid(req.params.urlCode)){
             console.log(req.params.urlCode)
             return res.status(400).send({status :false, message: "Not a valid Url"})
         }
