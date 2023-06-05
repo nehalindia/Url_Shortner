@@ -33,15 +33,22 @@ const GET_ASYNC = promisify(redisClient.GET).bind(redisClient);
 const createShortUrl = async function(req,res){
     try{
         let longUrl = req.body.longUrl
+        let arr = longUrl.split(":")
+        arr[0] = "https:"
+        console.log(longUrl," 1")
+        longUrl = arr.join("")
+        console.log(longUrl," 2")
         let protocol = req.protocol;
        
         let rawHeaders = req.rawHeaders
-        let hostName
-        for(let i = 0; i<rawHeaders.length; i++){
-            if(rawHeaders[i].includes('Host')){
-                hostName = rawHeaders[i+1] 
-            }
-        }
+        let hostName = req.headers.host
+
+        // for(let i = 0; i<rawHeaders.length; i++){
+        //     if(rawHeaders[i].includes('Host')){
+        //         hostName = rawHeaders[i+1] 
+        //     }
+        // }
+        console.log(req.headers)
         
         if(!longUrl){
             return res.status(400).send({status :false, message: "Must add Any Url"})
@@ -58,7 +65,7 @@ const createShortUrl = async function(req,res){
         let check = await urlModel.findOne({longUrl : longUrl}).select({urlCode:1, shortUrl:1, longUrl:1, _id:0})
         if(check){
           
-            await SET_ASYNC(`${check.urlCode}`, check.longUrl, 'EX', 3600*24)       
+            await SET_ASYNC(check.urlCode, check.longUrl, 'EX', 3600*24)       
             return res.status(200).send({status:true, data:check })
         }
     
@@ -88,7 +95,6 @@ const getUrl = async function(req,res){
             return res.status(400).send({status :false, message: "Must send complete Url"})
         }
         if(!shortid.isValid(code)){
-       
             return res.status(400).send({status :false, message: "Not a valid ShortId"})
         }
         
@@ -106,10 +112,10 @@ const getUrl = async function(req,res){
         }else{
             console.log("cache miss")
             await SET_ASYNC(data.urlCode, data.longUrl, 'EX', 3600*24) 
-            res.status(302).redirect(data.longUrl);
+            return res.status(302).redirect(data.longUrl);
         }
     }catch(error){
-        res.status(500).send({status : false,message: error.message})
+        return res.status(500).send({status : false,message: error.message})
     }
 }
 
