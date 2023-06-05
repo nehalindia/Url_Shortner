@@ -81,7 +81,7 @@ const createShortUrl = async function(req,res){
             let result = await urlModel.create(data)
             // cache.set(code, data.longUrl)
             // cache.set(code, data.longUrl, 60*60*60*60)
-            await SET_ASYNC(`${result.urlCode}`, result.longUrl)
+            await SET_ASYNC(`${result.urlCode}`, result.longUrl, 'EX', 60)
             let my = {longUrl: result.longUrl, shortUrl: result.shortUrl, urlCode: result.urlCode}
             return res.status(201).send({status:true, data:my})
         }
@@ -100,7 +100,7 @@ const getUrl = async function(req,res){
         if(!shortid.isValid(req.params.urlCode)){
         // if(!shortid.isNanoid(req.params.urlCode)){
             console.log(req.params.urlCode)
-            return res.status(400).send({status :false, message: "Not a valid Url"})
+            return res.status(400).send({status :false, message: "Not a valid ShortId"})
         }
         
         // if (cache.has(code)) { console.log("cache exist")}
@@ -125,7 +125,7 @@ const getUrl = async function(req,res){
         //return res.status(200).send({status :true, message: checkCache})
         let data = await urlModel.findOne({urlCode: req.params.urlCode})  //.select({urlCode:1, shortUrl:1, longUrl:1, _id:0})
         if(!data){
-            return res.status(404).send({status :false, message: "Not a valid Url"})                       //status code has to be changed
+            return res.status(404).send({status :false, message: "Not a valid UrlCode db"})                       //status code has to be changed
         }else{
             await SET_ASYNC(`${data.urlCode}`, data.longUrl, 'EX', 60) 
             res.status(302).redirect(data.longUrl);
