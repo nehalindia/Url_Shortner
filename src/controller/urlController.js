@@ -67,7 +67,7 @@ const createShortUrl = async function(req,res){
             // cache.set(check.urlCode, url)
            // return res.status(200).send({status:true, data:check })
             // cache.set(check.urlCode, url, 60*60*60*60)
-            await SET_ASYNC(`${check.urlCode}`, check.longUrl)      ///dekh lenge stringify use krna hai ya nhi
+            await SET_ASYNC(`${check.urlCode}`, check.longUrl, 'EX', 60)      ///dekh lenge stringify use krna hai ya nhi
             return res.status(200).send({status:true, data:check })
         }
     
@@ -127,7 +127,7 @@ const getUrl = async function(req,res){
         if(!data){
             return res.status(404).send({status :false, message: "Not a valid Url"})                       //status code has to be changed
         }else{
-            await SET_ASYNC(`${data.urlCode}`, data.longUrl) 
+            await SET_ASYNC(`${data.urlCode}`, data.longUrl, 'EX', 60) 
             res.status(302).redirect(data.longUrl);
         }
     }catch(error){
