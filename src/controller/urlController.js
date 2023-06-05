@@ -3,39 +3,38 @@ const NodeCache = require('node-cache')
 const cache = new NodeCache();
 const validUrl = require('valid-url')
 const shortid = require('shortid');
-const redis = require("redis");
-const { promisify } = require("util");
+const {SET_ASYNC,GET_ASYNC} = require("../middleware/redis")
 // const { nanoid } = require('nanoid');
 // const { isNanoid } = require('nanoid');
 
 
-//1. Connect to the redis server
-
-const redisClient = redis.createClient({
-    host: 'redis-16476.c212.ap-south-1-1.ec2.cloud.redislabs.com',
-    port: 16476,
-    password: 'lW4mvHKbk3LHvaX3u5LxICpwGtVawdI1',
-  });
-  
-redisClient.on("connect", async function () {
-    console.log("Connected to Redis..");
-});
-
-  
-  
-//2. Prepare the functions for each command
-
-const SET_ASYNC = promisify(redisClient.SET).bind(redisClient);
-const GET_ASYNC = promisify(redisClient.GET).bind(redisClient);
 
 
 
 const createShortUrl = async function(req,res){
     try{
         let longUrl = req.body.longUrl
+         
+        if(!longUrl){
+            return res.status(400).send({status :false, message: "Must add Any Url"})
+        }
+       if(typeof longUrl !=='string'){
+        return res.status(400).send({status :false, message: "type of string"})
+       }
+
         let arr = longUrl.split(":")
-        arr[0] = "https"
-        longUrl = arr.join(":")
+        if((arr.length > 1) && (arr[0]==="http" ||  arr[0]==="https")){
+       
+                arr[0] = "https"
+                longUrl = arr.join(":")
+          
+        }
+        else {
+           longUrl = "https://" + longUrl
+        }
+        console.log(longUrl," 1")
+        console.log(longUrl," 2")
+
         let protocol = req.protocol;
        
         let rawHeaders = req.rawHeaders
@@ -47,10 +46,7 @@ const createShortUrl = async function(req,res){
         //     }
         // }
         // console.log(req.headers)
-        
-        if(!longUrl){
-            return res.status(400).send({status :false, message: "Must add Any Url"})
-        }
+
    
         if (!validUrl.isWebUri(longUrl)){
             return res.status(400).send({status :false, message: "Not a valid Url"})
