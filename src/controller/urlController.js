@@ -34,10 +34,8 @@ const createShortUrl = async function(req,res){
     try{
         let longUrl = req.body.longUrl
         let arr = longUrl.split(":")
-        arr[0] = "https:"
-        console.log(longUrl," 1")
-        longUrl = arr.join("")
-        console.log(longUrl," 2")
+        arr[0] = "https"
+        longUrl = arr.join(":")
         let protocol = req.protocol;
        
         let rawHeaders = req.rawHeaders
@@ -48,7 +46,7 @@ const createShortUrl = async function(req,res){
         //         hostName = rawHeaders[i+1] 
         //     }
         // }
-        console.log(req.headers)
+        // console.log(req.headers)
         
         if(!longUrl){
             return res.status(400).send({status :false, message: "Must add Any Url"})
