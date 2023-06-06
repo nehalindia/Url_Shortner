@@ -24,10 +24,12 @@ const createShortUrl = async function(req,res){
 
         
         let protocol = req.protocol;
-        // let rawHeaders = req.rawHeaders
+       
+        let rawHeaders = req.rawHeaders
         let hostName = req.headers.host
 
-    
+      
+   
         if (!validUrl.isUri(longUrl)){
             return res.status(400).send({status :false, message: "Not a valid Url"})
         }
@@ -40,7 +42,7 @@ const createShortUrl = async function(req,res){
         if(check){
           
             await SET_ASYNC(check.urlCode, check.longUrl, 'EX', 3600*24)       
-            return res.status(201).send({status:true, data:check })
+            return res.status(200).send({status:true, data:check })
         }
     
 
