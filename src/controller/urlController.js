@@ -36,8 +36,7 @@ const createShortUrl = async function(req,res){
         console.log(longUrl," 2")
 
         let protocol = req.protocol;
-       
-        let rawHeaders = req.rawHeaders
+        // let rawHeaders = req.rawHeaders
         let hostName = req.headers.host
 
         // for(let i = 0; i<rawHeaders.length; i++){
