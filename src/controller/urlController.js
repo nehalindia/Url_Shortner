@@ -22,32 +22,13 @@ const createShortUrl = async function(req,res){
         return res.status(400).send({status :false, message: "type of string"})
        }
 
-        let arr = longUrl.split(":")
-        if((arr.length > 1) && (arr[0]==="http" ||  arr[0]==="https")){
-       
-                arr[0] = "https"
-                longUrl = arr.join(":")
-          
-        }
-        else {
-           longUrl = "https://" + longUrl
-        }
-        console.log(longUrl," 1")
-        console.log(longUrl," 2")
-
+        
         let protocol = req.protocol;
         // let rawHeaders = req.rawHeaders
         let hostName = req.headers.host
 
-        // for(let i = 0; i<rawHeaders.length; i++){
-        //     if(rawHeaders[i].includes('Host')){
-        //         hostName = rawHeaders[i+1] 
-        //     }
-        // }
-        // console.log(req.headers)
-
-   
-        if (!validUrl.isWebUri(longUrl)){
+    
+        if (!validUrl.isUri(longUrl)){
             return res.status(400).send({status :false, message: "Not a valid Url"})
         }
         longUrl = longUrl.toLowerCase()
