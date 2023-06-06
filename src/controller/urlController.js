@@ -40,7 +40,7 @@ const createShortUrl = async function(req,res){
         if(check){
           
             await SET_ASYNC(check.urlCode, check.longUrl, 'EX', 3600*24)       
-            return res.status(200).send({status:true, data:check })
+            return res.status(201).send({status:true, data:check })
         }
     
 
