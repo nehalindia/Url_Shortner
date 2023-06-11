@@ -1,6 +1,6 @@
 const urlModel = require('../models/urlModel')
-const NodeCache = require('node-cache')
-const cache = new NodeCache();
+// const NodeCache = require('node-cache')
+// const cache = new NodeCache();
 const validUrl = require('valid-url')
 const shortid = require('shortid');
 const {SET_ASYNC,GET_ASYNC} = require("../middleware/redis")
@@ -25,7 +25,7 @@ const createShortUrl = async function(req,res){
         
         let protocol = req.protocol;
        
-        let rawHeaders = req.rawHeaders
+        // let rawHeaders = req.rawHeaders
         let hostName = req.headers.host
 
       
